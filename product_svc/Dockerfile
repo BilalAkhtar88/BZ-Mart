@@ -1,6 +1,7 @@
 FROM python:3.11
 #It tells Docker to use the official Python 3.11 image as the foundation for your custom image. 
 
+COPY pyproject.toml /app/
 COPY . /app/
 #This command copies all the files and directories from your current working directory (.) 
 #and pastes into the directory /app/ within the container. 
