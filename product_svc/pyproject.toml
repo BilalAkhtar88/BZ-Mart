@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "product-svc"
+name = "product_svc"
 version = "0.1.0"
 description = ""
 authors = ["BilalAkhtar88 <bilal_akhtar88@yahoo.com>"]

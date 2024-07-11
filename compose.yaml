@@ -7,9 +7,8 @@ services:
     build:
       context: ./product_svc
       dockerfile: Dockerfile
-    container_name: product-app
-    # volumes:
-    #   - ./product_svc:/app  # Sync local development directory with the container
+    volumes:
+      - ./product_svc:/app  # Sync local development directory with the container
     depends_on:
       - kafka-ui
       - broker
