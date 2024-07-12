@@ -19,4 +19,12 @@ Step Last: Create compose.yaml file accordingly
 **Step to run code on Google Shell**
 
 Step 1: Push the code to github and run google shell.
+
+	-> docker compose up
+	-> open a new terminal
+	-> docker ps
+	-> docker logs <add ID of the service> -f
+	-> click on the link provided in log
+	-> replace redirect after / with docs
+
     
