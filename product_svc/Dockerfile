@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.11
 #It tells Docker to use the official Python 3.12 image as the foundation for your custom image. 
 
 COPY . /app/
