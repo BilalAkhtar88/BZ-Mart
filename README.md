@@ -20,6 +20,7 @@ Step Last: Create compose.yaml file accordingly
 
 Step 1: Push the code to github and run google shell.
 
+	-> docker compose build --no-cache
 	-> docker compose up
 	-> open a new terminal
 	-> docker ps
