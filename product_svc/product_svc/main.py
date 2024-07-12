@@ -23,8 +23,8 @@ async def create_topic():
 
     retries = 0
 
-    # while retries < MAX_RETRIES:
-    while True:
+    while retries < MAX_RETRIES:
+    # while True:
         try:
             await admin_client.start()
             topic_list = [NewTopic(name=KAFKA_PRODUCT_TOPIC,
