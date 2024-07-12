@@ -1,15 +1,12 @@
 import asyncio
 from contextlib import asynccontextmanager
-# from fastapi.concurrency import asynccontextmanager
 import logging
 from typing import Annotated, Any, AsyncGenerator
 from fastapi import Depends, FastAPI
 
-# I will store in json format, therefore does not require the proto file
-# from product_svc.proto import product_pb2, operation_pb2
 import json
 
-from product_svc.models import Product, ProductUpdate
+from product_svc.models import Product
 from product_svc.settings import BOOTSTRAP_SERVER, KAFKA_PRODUCT_TOPIC
 from aiokafka import AIOKafkaProducer
 from aiokafka.errors import KafkaConnectionError
@@ -24,7 +21,6 @@ async def create_topic():
     retries = 0
 
     while retries < MAX_RETRIES:
-    # while True:
         try:
             await admin_client.start()
             topic_list = [NewTopic(name=KAFKA_PRODUCT_TOPIC,
@@ -44,9 +40,11 @@ async def create_topic():
             print(f"Kafka connection failed. Retrying {retries}/{MAX_RETRIES}...")
             await asyncio.sleep(RETRY_INTERVAL)
         
-    raise Exception("Failed to connect to kafka broker after several retries")
+    print("Failed to connect to kafka broker after several retries")
+    return
 
-async def kafka_producer():
+@asynccontextmanager
+async def kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
     producer = AIOKafkaProducer(bootstrap_servers=BOOTSTRAP_SERVER)
     await producer.start()
     try:
@@ -69,8 +67,6 @@ logging.basicConfig(level= logging.INFO)
 logger = logging.getLogger(__name__)
 
 @app.post('/products/')
-# Try following instead of above when returning something in response_model=Product
-# @app.post('/products/', response_model=Product)
 async def create_product(
     product: Product,
     producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
