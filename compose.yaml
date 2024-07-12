@@ -7,7 +7,7 @@ services:
       context: ./product_svc
       dockerfile: Dockerfile
     volumes:
-      - ./product_svc:/app
+      - ./product_svc:/app  # Sync local development directory with the container
     depends_on:
       - kafka-ui
       - broker

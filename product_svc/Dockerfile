@@ -9,9 +9,6 @@ WORKDIR /app
 #This line sets the working directory inside the container to /app/. 
 #Since your application code is copied to /app/, this ensures that the following commands operate on the correct files.
 
-# Print the current directory contents
-RUN ls -al /app
-
 RUN pip install poetry
 #Installs poetry inside your container
 
