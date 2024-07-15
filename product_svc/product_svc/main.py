@@ -108,7 +108,7 @@ async def delete_product(id: int,
     
     logger.info(f"Received product data for deletion: {id}")
 
-    product = Product(id=str(id))
+    product = ProductUpdate(id=str(id))
     product.operation = "DELETE"
 
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
