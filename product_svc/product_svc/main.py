@@ -76,6 +76,7 @@ async def create_product(
     producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
 ):
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
+    serialized_product.operation = "CREATE"
 
     logger.info(f"Received Message: {serialized_product}")
 
@@ -83,34 +84,25 @@ async def create_product(
 
     return {"message" : "Created product successfully!"}
 
-
-# @app.put('/products')
-# async def edit_product(product: ProductUpdate, id:int, producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]):
-
-#     logger.info(f"Received product data for update: {product}")
-
-#     product_proto = product_pb2.Product()
-#     product_proto.id = id
-#     product_proto.product_id = product.product_id
-#     product_proto.name = product.name
-#     product_proto.price = product.price
-#     product_proto.category = product.category
-#     product_proto.description = product.description
-#     product_proto.operation = operation_pb2.OperationType.UPDATE
-        
-#     serialized_product = product_proto.SerializeToString()
-#     await producer.send_and_wait(KAFKA_PRODUCT_TOPIC, serialized_product)
-
-#     return {"Product": "Updated"}
+@app.put('/products/{id}')
+async def edit_product(id: int, 
+                       product: ProductUpdate,
+                       producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
+                       ):
     
+    logger.info(f"Received product data for update: {product}")
 
-# @app.delete('/products/')
-# async def delete_product(id: int, producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]):
-#     product_proto = product_pb2.Product()
-#     product_proto.id = id
-#     product_proto.operation = operation_pb2.OperationType.DELETE
+    serialized_product = json.dumps(product.__dict__).encode('utf-8')
+    serialized_product.operation = "UPDATE"
+    serialized_product.id = id
+    # serialized_product.product_id = product.product_id
+    # serialized_product.name = product.name
+    # serialized_product.price = product.price
+    # serialized_product.category = product.category
+    # serialized_product.description = product.description
+    # serialized_product.operation = "UPDATE"
+        
+    # serialized_product = product_proto.SerializeToString()
+    await producer.send_and_wait(KAFKA_PRODUCT_TOPIC, serialized_product)
 
-#     serialized_product = product_proto.SerializeToString()
-#     await producer.send_and_wait(KAFKA_PRODUCT_TOPIC, serialized_product)
-
-#     return {"Product" : "Deleted"}
+    return {"message": "Product updated successfully!"}
