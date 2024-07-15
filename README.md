@@ -28,4 +28,12 @@ Step 1: Push the code to github and run google shell.
 	-> click on the link provided in log
 	-> replace redirect after / with docs
 
+**Product Microservice**
+
+Step 1: No get method for fetching product details from db in this microservice, to keep this service completely delinked from database
+Step 2: Post method used to create a new product and send to kafka broker
+Step 3: Put method used to update an existing product and send to kafka broker
+Step 4: Delete method used to delete a product and send to kafka broker
+
+
     

@@ -77,7 +77,6 @@ async def create_product(
 ):
 
     product.operation = "CREATE"
-    # serialized_product = json.dumps(product.dict()).encode('utf-8')
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
 
     logger.info(f"Received Message: {serialized_product}")
@@ -98,14 +97,21 @@ async def edit_product(id: int,
     product.id = str(id)  # Ensure id is a string for serialization
 
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
-    # serialized_product.product_id = product.product_id
-    # serialized_product.name = product.name
-    # serialized_product.price = product.price
-    # serialized_product.category = product.category
-    # serialized_product.description = product.description
-    # serialized_product.operation = "UPDATE"
-        
-    # serialized_product = product_proto.SerializeToString()
     await producer.send_and_wait(KAFKA_PRODUCT_TOPIC, serialized_product)
 
     return {"message": "Product updated successfully!"}
+
+@app.delete('/products/{id}')
+async def delete_product(id: int, 
+                         producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
+                         ):
+    
+    logger.info(f"Received product data for deletion: {id}")
+
+    product = Product(id=str(id))
+    product.operation = "DELETE"
+
+    serialized_product = json.dumps(product.__dict__).encode('utf-8')
+    await producer.send_and_wait(KAFKA_PRODUCT_TOPIC, serialized_product)
+
+    return {"message": "Product deleted successfully!"}
