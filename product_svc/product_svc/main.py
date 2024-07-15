@@ -75,8 +75,10 @@ async def create_product(
     product: Product,
     producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
 ):
+
+    product.operation = "CREATE"
+    # serialized_product = json.dumps(product.dict()).encode('utf-8')
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
-    serialized_product.operation = "CREATE"
 
     logger.info(f"Received Message: {serialized_product}")
 
@@ -92,9 +94,10 @@ async def edit_product(id: int,
     
     logger.info(f"Received product data for update: {product}")
 
+    product.operation = "UPDATE"
+    product.id = str(id)  # Ensure id is a string for serialization
+
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
-    serialized_product.operation = "UPDATE"
-    serialized_product.id = id
     # serialized_product.product_id = product.product_id
     # serialized_product.name = product.name
     # serialized_product.price = product.price

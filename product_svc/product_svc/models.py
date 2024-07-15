@@ -1,16 +1,13 @@
-import datetime
 from typing import Optional
 from pydantic import BaseModel
 
-
-class Product (BaseModel):
+class Product(BaseModel):
     product_id: str
     name: str
     description: str
     price: float
     category: str
-    operation: str
-
+    operation: Optional[str] = None
 
 class ProductUpdate(BaseModel):
     id: Optional[str] = None
