@@ -76,7 +76,7 @@ async def create_product(
     producer: Annotated[AIOKafkaProducer, Depends(kafka_producer)]
 ):
     serialized_product = json.dumps(product.__dict__).encode('utf-8')
-    serialized_product.operation = "CREATE"
+    # serialized_product.operation = "CREATE"
 
     logger.info(f"Received Message: {serialized_product}")
 
