@@ -55,16 +55,16 @@ async def consume_products():
                             session.refresh(existing_product)
                             logger.info(f'Product updated in db: {existing_product}')
                         else:
-                            logger.warning(f"Product with ID {product.id} and name {product.name} not found")
+                            logger.warning(f"Product with ID {product.get("id")} and name {product.get("name")} not found")
 
                     elif product.get("operation") in ["DELETE", "Delete", "delete"]:
                         existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id"))).first()
                         if existing_product:
                             session.delete(existing_product)
                             session.commit()
-                            logger.info(f"Product with ID {product.id} successfully deleted")
+                            logger.info(f"Product with ID {product.get("id")} successfully deleted")
                         else:
-                            logger.warning(f"Product with ID {product.id} not found for deletion")
+                            logger.warning(f"Product with ID {product.get("id")} not found for deletion")
 
             except Exception as e:
                 logger.error(f"Error processing message: {e}")
