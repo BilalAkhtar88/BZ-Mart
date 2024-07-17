@@ -31,11 +31,11 @@ async def consume_products():
                         logger.info(f"Create command received and updating Database now!")
                         # Your code to handle the CREATE operation                        
                         new_product = ProductStore(
-                            name=product.name,
-                            product_id=product.product_id,
-                            description=product.description,
-                            price=product.price,
-                            category=product.category
+                            name=product.get("name"),
+                            product_id=product.get("product_id"),
+                            description=product.get("description"),
+                            price=product.get("price"),
+                            category=product.get("category")
                         )
                         session.add(new_product)
                         session.commit()
@@ -43,13 +43,13 @@ async def consume_products():
                         logger.info(f'Product added to db: {new_product}')
                     
                     elif product.get("operation") in ["UPDATE", "Update", "update"]:
-                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.id)).first()
+                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id") and ProductStore.name == product.get("name"))).first()
                         if existing_product:
-                            existing_product.name = product.name
-                            existing_product.product_id = product.product_id
-                            existing_product.description = product.description
-                            existing_product.price = product.price
-                            existing_product.category = product.category
+                            existing_product.name = product.get("name")
+                            existing_product.product_id = product.get("product_id")
+                            existing_product.description = product.get("description")
+                            existing_product.price = product.get("price")
+                            existing_product.category = product.get("category")
                             session.add(existing_product)
                             session.commit()
                             session.refresh(existing_product)
@@ -58,7 +58,7 @@ async def consume_products():
                             logger.warning(f"Product with ID {product.id} and name {product.name} not found")
 
                     elif product.get("operation") in ["DELETE", "Delete", "delete"]:
-                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.id)).first()
+                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id"))).first()
                         if existing_product:
                             session.delete(existing_product)
                             session.commit()
