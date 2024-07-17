@@ -33,9 +33,28 @@ This project aims to develop an online mart API using an event-driven microservi
 6. Define data models using `BaseModel` in `models.py` in the `product_svc` microservice because we are not creating any table and thus not using SQLModel for direct database interaction.
 7. Implement business logic in main.py.
 
-### Step Last: Create compose.yaml File
+### Step Second Last: Create compose.yaml File
 1. Define services and dependencies in compose.yaml.
 2. Configure Docker Compose for orchestration of microservices.
+
+### Step Last: Run Code on Google Shell
+1. Push the code to GitHub and access Google Shell.
+2. Build and run the Docker containers:
+   ```bash
+   docker compose build --no-cache
+   docker compose up
+3. Open a new terminal and check running containers
+   ```bash
+   docker ps
+4. View logs of a specific service using following command by replacing the <service_id>:
+   ```bash
+   docker logs <service_id> -f
+5. Access the API documentation:
+   Click on the link provided in the logs.
+   Replace /redirect with /docs in the URL.
+   Change the port numbers in the URL.
+
+
 
 
 
