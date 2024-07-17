@@ -24,10 +24,33 @@ This project aims to develop an online mart API using an event-driven microservi
    ```bash
    poetry new product_svc
    cd product_svc
+2. Initialize dependencies and install packages:
+   ```bash
+   poetry install
+3. Create Dockerfile for production deployment.
+4. Create .env file and .dockerignore file.
+5. Define application settings in settings.py.
+6. Define data models using BaseModel in models.py.
+7. Implement business logic in main.py.
+
+### Step Last: Create compose.yaml File
+1. Define services and dependencies in compose.yaml.
+2. Configure Docker Compose for orchestration of microservices.
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+### Steps I wrote earlier, to be formatted for help.
 
 
 **Steps followed in this project**
