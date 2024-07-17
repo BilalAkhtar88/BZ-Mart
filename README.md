@@ -24,13 +24,13 @@ This project aims to develop an online mart API using an event-driven microservi
    ```bash
    poetry new product_svc
    cd product_svc
-2. Initialize dependencies and install packages:
+2. Initialize dependencies by copying from existing pyproject.toml file and install packages:
    ```bash
    poetry install
 3. Create Dockerfile for production deployment.
 4. Create .env file and .dockerignore file.
 5. Define application settings in settings.py.
-6. Define data models using BaseModel in models.py.
+6. Define data models using `BaseModel` in `models.py` in the `product_svc` microservice because we are not creating any table and thus not using SQLModel for direct database interaction.
 7. Implement business logic in main.py.
 
 ### Step Last: Create compose.yaml File
@@ -52,21 +52,6 @@ This project aims to develop an online mart API using an event-driven microservi
 
 ### Steps I wrote earlier, to be formatted for help.
 
-
-**Steps followed in this project**
-
-Step 1: Create product micro-service as producer
-
-    ->  poetry new product_svc
-    ->  thn move directory to product_svc folder using cmd `cd product_svc`
-    ->  copy into pyproject.toml thn poetry install
-    ->  create Dockerfile inside this folder for production
-    ->  create .env file and .dockerignore file
-    ->  inside product_svc folder, create settings.py file
-    ->  inside product_svc folder, create models.py file using BaseModel in producer because we are not creating any table in database
-    ->  inside product_svc folder, create main.py file containing all the business logic
-
-Step Last: Create compose.yaml file accordingly
 
 **Step to run code on Google Shell**
 
