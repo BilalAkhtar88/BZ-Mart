@@ -1,5 +1,34 @@
 # BZ-Mart
- Backend using FastAPI as assignment of PIAIC
+
+Backend using FastAPI as an assignment of PIAIC
+
+## Project Overview
+
+This project aims to develop an online mart API using an event-driven microservices architecture. The API will be built using FastAPI and will leverage Docker, Kafka, PostgreSQL, and Kong for API gateway management. The goal is to create a scalable, maintainable, and efficient system capable of handling high volumes of transactions and data in a distributed manner.
+
+## Technologies Used
+
+- **FastAPI**: Modern, fast web framework for building APIs with Python.
+- **Docker**: Containerization technology for consistent deployment.
+- **Kafka**: Distributed event streaming platform for handling asynchronous communication.
+- **PostgreSQL**: Relational database for data persistence.
+- **Kong**: API Gateway and Microservices Management Layer.
+- **DevContainers**: Ensures a consistent development environment.
+- **GitHub Actions**: CI/CD pipeline for automated testing and deployment.
+
+## Steps Followed in the Project
+
+### Step 1: Create Product Microservice as Producer
+
+1. Create `product_svc` microservice:
+   ```bash
+   poetry new product_svc
+   cd product_svc
+
+
+
+
+
 
 **Steps followed in this project**
 
