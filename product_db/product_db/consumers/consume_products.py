@@ -26,7 +26,9 @@ async def consume_products():
                 logger.info(f"Received Message: {product}")
 
                 with Session(engine) as session:
+                    logger.info(f"Session has started!")
                     if product.operation == "CREATE":
+                        logger.info(f"Create command received and updating Database now!")
                         new_product = ProductStore(
                             name=product.name,
                             product_id=product.product_id,
