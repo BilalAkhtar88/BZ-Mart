@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, Field
 
 
-class ProductConsumer (BaseModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class ProductConsumer (BaseModel):
+    id: Optional[int] = None
     product_id: str
     name: str
     description: str
