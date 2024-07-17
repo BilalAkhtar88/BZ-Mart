@@ -43,7 +43,7 @@ async def consume_products():
                         logger.info(f'Product added to db: {new_product}')
                     
                     elif product.get("operation") in ["UPDATE", "Update", "update"]:
-                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id") and ProductStore.name == product.get("name"))).first()
+                        existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id"))).first()
                         if existing_product:
                             existing_product.name = product.get("name")
                             existing_product.product_id = product.get("product_id")
@@ -55,7 +55,7 @@ async def consume_products():
                             session.refresh(existing_product)
                             logger.info(f'Product updated in db: {existing_product}')
                         else:
-                            logger.warning(f"Product with ID {product.get("id")} and name {product.get("name")} not found")
+                            logger.warning(f"Product with ID {product.get("id")} not found")
 
                     elif product.get("operation") in ["DELETE", "Delete", "delete"]:
                         existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.get("id"))).first()
