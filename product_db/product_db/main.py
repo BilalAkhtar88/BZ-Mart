@@ -1,7 +1,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 import logging
-from typing import List
+from typing import List, Any
 
 from fastapi import FastAPI, HTTPException
 from product_db.consumers.consume_products import consume_products
@@ -37,6 +37,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, title="Product Consumer Service", version='1.0.0')
 
+@app.get('/')
+async def root() -> Any:
+    return {"message": "Welcome to Products Consumer and Database Service"}
 
 @app.get("/products/", response_model=List[ProductStore])
 async def get_products():
