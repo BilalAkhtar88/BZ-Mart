@@ -27,7 +27,7 @@ async def consume_products():
 
                 with Session(engine) as session:
                     logger.info(f"Session has started!")
-                    if product.get("operation") == "CREATE" | "Create" | "create":
+                    if product.get("operation") in ["CREATE", "Create", "create"]:
                         logger.info(f"Create command received and updating Database now!")
                         # Your code to handle the CREATE operation                        
                         new_product = ProductStore(
@@ -42,7 +42,7 @@ async def consume_products():
                         session.refresh(new_product)
                         logger.info(f'Product added to db: {new_product}')
                     
-                    elif product.get("operation") == "UPDATE" | "Update" | "update":
+                    elif product.get("operation") in ["UPDATE", "Update", "update"]:
                         existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.id)).first()
                         if existing_product:
                             existing_product.name = product.name
@@ -57,7 +57,7 @@ async def consume_products():
                         else:
                             logger.warning(f"Product with ID {product.id} and name {product.name} not found")
 
-                    elif product.get("operation") == "DELETE" | "Delete" | "delete":
+                    elif product.get("operation") in ["DELETE", "Delete", "delete"]:
                         existing_product = session.exec(select(ProductStore).where(ProductStore.id == product.id)).first()
                         if existing_product:
                             session.delete(existing_product)
