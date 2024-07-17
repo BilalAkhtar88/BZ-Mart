@@ -73,6 +73,10 @@ services:
     depends_on:
       - broker
 
+volumes:
+  product-db:
+    driver: local
+
 networks:
   default:
     driver: bridge
