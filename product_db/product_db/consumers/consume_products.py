@@ -4,7 +4,7 @@ import logging
 from product_db.consumers.consumer import create_consumer
 from product_db.models import ProductConsumer, ProductStore
 from product_db.db import engine
-from product_db.setting import KAFKA_PRODUCT_CONSUMER_GROUP_ID, KAFKA_PRODUCT_TOPIC
+from product_db.settings import KAFKA_PRODUCT_CONSUMER_GROUP_ID, KAFKA_PRODUCT_TOPIC
 from sqlmodel import Session, select
 
 

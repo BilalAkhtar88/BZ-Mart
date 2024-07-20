@@ -1,6 +1,6 @@
 import asyncio
 from aiokafka import AIOKafkaConsumer
-from product_db.setting import BOOTSTRAP_SERVER
+from product_db.settings import BOOTSTRAP_SERVER
 
 import logging
 
