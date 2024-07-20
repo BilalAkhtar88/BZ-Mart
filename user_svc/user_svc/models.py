@@ -18,7 +18,7 @@ class User (SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     email: str 
-    is_seller: bool
+    is_seller: Optional[bool] = Field(default = False)
     hashed_password: str
     # password: str
 
@@ -26,6 +26,7 @@ class User (SQLModel, table=True):
 class Profile (SQLModel, table=True):
     username: str | None = Field(default = None, primary_key=True)
     user_id: int | None = Field(default = None, foreign_key="user.id")
+    is_seller: bool = Field(default = False)
     name: str
     email: str
     phone: str

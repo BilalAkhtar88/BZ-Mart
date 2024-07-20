@@ -7,9 +7,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from user_svc.models import UserIP, User, Profile
 from user_svc.db import get_session, create_tables
+from user_svc import auth
 
 # # from user_service.models import Profile, ProfileData, ProfileResponse, Register_User, Token, User
-# from user_service import auth
 # from user_service.kafka.create_topic import create_kafka_topic
 # from user_service.kafka.producer import kafka_producer
 # from user_service.proto import user_pb2
@@ -43,32 +43,36 @@ def register_user(
     ):
 
     logger.info(f"new_user: {new_user}")
-    # db_user = get_user_by_username(db, username=user.username)
-    # if db_user:
-    #     raise HTTPException(status_code=400, detail="Username already registered")
-    # db_email = get_user_by_email(db, email=user.email)
-    # if db_email:
-    #     raise HTTPException(status_code=400, detail="Email already registered")
-    # return create_user(db=db, user=user)
-    return {"message": f""" User with username:{new_user.username} successfully registered """}
+    db_user = auth.get_user_from_db(session, new_user.username, new_user.email)
+    # First checks for an existing user with given username, 
+    # if not found then check for existing user with given email address
+    if db_user:
+        raise HTTPException(status_code=400, detail="User already registered.")
+    user = User(username=new_user.username,
+                email=new_user.email,
+                password=auth.hash_password(new_user.password),
+                is_seller=new_user.is_seller)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return {"message": f""" User with username:{user.username} successfully registered """}
+    # return {"message": f""" User with username:{new_user.username} successfully registered. """}
 
-# @app.post("/register")
-# async def regiser_user(
-#     new_user: Annotated[Register_User, Depends()],
-#     session: Annotated[Session, Depends(get_session)]
-# ):
-#     logger.info(f"new_user: {new_user}")
-#     db_user = auth.get_user_from_db(session, new_user.username, new_user.email)
-#     if db_user:
-#         raise HTTPException(
-#             status_code=409, detail="User with these credentials already exists")
-#     user = User(username=new_user.username,
-#                 email=new_user.email,
-#                 password=auth.hash_password(new_user.password))
-#     session.add(user)
-#     session.commit()
-#     session.refresh(user)
-#     return {"message": f""" User with username:{user.username} successfully registered """}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
