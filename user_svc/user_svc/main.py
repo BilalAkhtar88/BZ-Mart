@@ -1,7 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
 from typing import Annotated
-from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
@@ -34,7 +33,7 @@ app: FastAPI = FastAPI(
 async def root():
     return {"message": "Welcome to User Management Service"}
 
-# Endpoint for registering new user
+# This endpoint is for registering new user
 # @app.post("/register", response_model=User)
 @app.post("/register")
 def register_user(
