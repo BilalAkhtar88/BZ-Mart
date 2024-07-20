@@ -49,7 +49,7 @@ services:
       context: ./user_svc
       dockerfile: Dockerfile
     volumes:
-      - .user_svc:/app/
+      - ./user_svc:/app/
     depends_on:
       - user-db
       # - broker
