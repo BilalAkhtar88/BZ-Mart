@@ -55,9 +55,7 @@ def register_user(
     session.add(user)
     session.commit()
     session.refresh(user)
-    return {"message": f""" User with username:{user.username} successfully registered """}
-    # return {"message": f""" User with username:{new_user.username} successfully registered. """}
-
+    return {"message": f""" User with username:{user.username} successfully registered! """}
 
 
 
