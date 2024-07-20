@@ -51,7 +51,7 @@ def register_user(
     
     user = User(username=new_user.username,
                 email=new_user.email,
-                password=auth.hash_password(new_user.password),
+                hashed_password=auth.hash_password(new_user.password),
                 is_seller=new_user.is_seller)
     session.add(user)
     session.commit()
