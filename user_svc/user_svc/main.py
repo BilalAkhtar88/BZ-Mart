@@ -119,24 +119,6 @@ def register_user(
 #         raise credential_exception
 #     return auth.token_service(user)
 
-# # register new user
-# @app.post("/register")
-# async def regiser_user(
-#     new_user: Annotated[Register_User, Depends()],
-#     session: Annotated[Session, Depends(get_session)]
-# ):
-#     logger.info(f"new_user: {new_user}")
-#     db_user = auth.get_user_from_db(session, new_user.username, new_user.email)
-#     if db_user:
-#         raise HTTPException(
-#             status_code=409, detail="User with these credentials already exists")
-#     user = User(username=new_user.username,
-#                 email=new_user.email,
-#                 password=auth.hash_password(new_user.password))
-#     session.add(user)
-#     session.commit()
-#     session.refresh(user)
-#     return {"message": f""" User with username:{user.username} successfully registered """}
 
 
 # # create user profile
