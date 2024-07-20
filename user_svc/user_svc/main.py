@@ -47,7 +47,6 @@ def register_user(
     # if not found then check for existing user with given email address
     if db_user:
         raise HTTPException(status_code=400, detail="User already registered.")
-    logger.info(f"password is: {auth.hash_password(new_user.password)}")
     
     user = User(username=new_user.username,
                 email=new_user.email,

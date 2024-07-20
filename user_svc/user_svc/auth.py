@@ -28,12 +28,12 @@ def get_user_from_db(
     # session.query(User).filter(User.username == username).first()
     user: User | None = session.exec(select(User).where(User.username == username)).first()
     if user:
-        logger.warning(f'User with username {User.username} already exists.')
+        logger.warning(f'User with username {username} already exists.')
         return user
     else:
         user: User | None = session.exec(select(User).where(User.email == email)).first()
         if user:
-            logger.warning(f'User with email {User.email} already exists with a username {user.username}.')
+            logger.warning(f'User with email {email} already exists with a username {user.username}.')
             return user
     return user
 
