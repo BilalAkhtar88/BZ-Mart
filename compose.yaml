@@ -25,6 +25,8 @@ services:
       - broker
     ports:
       - "8001:8000"  # Expose container port 8000 to host port 8000 
+    networks:
+      - default
 
   product-db:
     image: postgres:latest  # Use the official PostgreSQL image
@@ -38,6 +40,8 @@ services:
         - '5433:5432'
     volumes:
         - product-db:/var/lib/postgresql/data      
+    networks:
+      - default
 
   # User Management Service
   user_svc:
@@ -52,8 +56,8 @@ services:
       # - schema-registry
     ports:
       - "8002:8000"
-    # networks:
-    #   - default
+    networks:
+      - default
 
   # User DB Service
   user-db:
@@ -68,8 +72,8 @@ services:
       - "5434:5432"
     volumes:
       - user-db:/var/lib/postgresql/data
-    # networks:
-    #   - default
+    networks:
+      - default
 
   broker:
     image: apache/kafka:3.7.0
