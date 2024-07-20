@@ -59,7 +59,7 @@ services:
   user-db:
     image: postgres:latest
     restart: always
-    container_name: User_db_Cont
+    container_name: User-db-Cont
     environment:
       - POSTGRES_USER=bilal
       - POSTGRES_PASSWORD=my_password
