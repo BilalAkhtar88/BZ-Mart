@@ -8,7 +8,7 @@ class UserIP (BaseModel):
     id: Optional[int] = None
     username: str = Field(unique=True)
     email: str 
-    is_seller: bool
+    is_seller: Optional[bool] = Field(default = False)
     name: str
     password: str    
     operation: Optional[str] = None
