@@ -14,8 +14,8 @@ import os
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
-EXPIRY_TIME = os.getenv('EXPIRY_TIME')
-REFRESH_EXPIRY_DAYS = os.getenv('REFRESH_EXPIRY_DAYS')
+EXPIRY_TIME = int(os.getenv('EXPIRY_TIME'))
+REFRESH_EXPIRY_DAYS = int(os.getenv('REFRESH_EXPIRY_DAYS'))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Print values to debug
 print(f"SECRET_KEY: {SECRET_KEY}")
 print(f"ALGORITHM: {ALGORITHM}")
-print(f"EXPIRY_TIME: {EXPIRY_TIME}")
+print(f"EXPIRY_TIME: {type(EXPIRY_TIME)}, {EXPIRY_TIME}")
 print(f"REFRESH_EXPIRY_DAYS: {REFRESH_EXPIRY_DAYS}")
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/token")
