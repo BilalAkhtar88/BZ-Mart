@@ -13,12 +13,18 @@ import os
 
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALGORITHYM = os.getenv('ALGORITHM')
+ALGORITHM = os.getenv('ALGORITHM')
 EXPIRY_TIME = os.getenv('EXPIRY_TIME')
 REFRESH_EXPIRY_DAYS = os.getenv('REFRESH_EXPIRY_DAYS')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Print values to debug
+print(f"SECRET_KEY: {SECRET_KEY}")
+print(f"ALGORITHM: {ALGORITHM}")
+print(f"EXPIRY_TIME: {EXPIRY_TIME}")
+print(f"REFRESH_EXPIRY_DAYS: {REFRESH_EXPIRY_DAYS}")
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes="bcrypt")
@@ -82,7 +88,7 @@ def create_access_token(
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     data_to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
-        data_to_encode, SECRET_KEY, algorithm=ALGORITHYM)
+        data_to_encode, SECRET_KEY, algorithm=ALGORITHM)
     print("SECRET_KEY is ", SECRET_KEY)
     return encoded_jwt
 
@@ -97,7 +103,7 @@ def current_user(
         headers={"www-Authenticate": "Bearer"}
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, ALGORITHYM)
+        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
         username: str | None = payload.get("sub")
         if username is None:
             raise credential_exception
@@ -120,7 +126,7 @@ def create_refresh_token(
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     data_to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
-        data_to_encode, SECRET_KEY, algorithm=ALGORITHYM, )
+        data_to_encode, SECRET_KEY, algorithm=ALGORITHM, )
     return encoded_jwt
 
 def validate_refresh_token(
@@ -134,7 +140,7 @@ def validate_refresh_token(
         headers={"www-Authenticate": "Bearer"}
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, ALGORITHYM)
+        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
         email: str | None = payload.get("sub")
         if email is None:
             raise credential_exception
