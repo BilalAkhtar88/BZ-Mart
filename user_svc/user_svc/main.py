@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from pydantic import BaseModel
 from user_svc.auth import create_access_token, get_current_user, TokenData
+import logging
 
 app = FastAPI()
 
@@ -20,8 +21,13 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 @app.post("/token", response_model=Token)
 async def login_for_access_token(user: User):
+    logger.info(f"Received login request for user: {user.username}")
     if user.username in fake_users_db and user.password == fake_users_db[user.username]["password"]:
         access_token = create_access_token(data={"sub": user.username})
         return {"access_token": access_token, "token_type": "bearer"}
@@ -35,6 +41,7 @@ async def login_for_access_token(user: User):
 @app.get("/protected-route")
 async def read_protected_route(current_user: TokenData = Depends(get_current_user)):
     return {"message": f"Hello, {current_user.username}"}
+
 
 # import logging
 # from contextlib import asynccontextmanager
