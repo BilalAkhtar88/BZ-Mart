@@ -88,6 +88,7 @@ async def create_user_profile(
     user_data: ProfileData,
     session: Annotated[Session, Depends(get_session)],
 ) -> Profile:
+    print(f"current_user: {current_user}")
     """ Create user profile """
     try:
         existing_profile: Profile | None = auth.get_user_data_from_db(

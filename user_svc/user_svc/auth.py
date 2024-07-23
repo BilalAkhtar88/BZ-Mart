@@ -57,7 +57,7 @@ def get_user_data_from_db(
     statement = select(Profile).where(Profile.username == username)
     user_profile = session.exec(statement).first()
     logger.info(f" user_profile: {user_profile}")
-    print (f" user_profile: {user_profile}")
+    # print (f" user_profile: {user_profile}")
     if not user_profile:
         return None
 
