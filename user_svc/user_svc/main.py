@@ -106,6 +106,7 @@ async def create_user_profile(
         session.add(new_profile)
         session.commit()
         session.refresh(new_profile)
+        print(new_profile)
         return new_profile
     
     except HTTPException as httpexep:
