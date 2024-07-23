@@ -88,7 +88,6 @@ async def create_user_profile(
     user_data: ProfileData,
     session: Annotated[Session, Depends(get_session)],
 ) -> Profile:
-    logger.info(f"current_user: {current_user}")
     print(f"current_user: {current_user}")
     """ Create user profile """
     try:
@@ -108,15 +107,12 @@ async def create_user_profile(
         session.add(new_profile)
         session.commit()
         session.refresh(new_profile)
-        logger.info(f"new_profile: {new_profile}")
         print(new_profile)
         return new_profile
     
     except HTTPException as httpexep:
-        logger.error(f"HTTPException: {httpexep}")
         raise httpexep
     except Exception as e:
-        logger.error(f"Exception: {e}")
         raise HTTPException(
             status_code=500, detail=f"Failed to create user profile: {e}")
 
