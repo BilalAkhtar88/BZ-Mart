@@ -34,8 +34,7 @@ app: FastAPI = FastAPI(
 origins = [
     "http://localhost",
     "http://localhost:8000",
-    "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev",  # Add your specific origin here
-    # "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev"
+    # "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev",  # Add your specific origin here
     # Add other origins as needed
 ]
 
