@@ -8,6 +8,8 @@ from sqlmodel import Session, select
 from user_svc import auth
 from user_svc.db import get_session, create_tables
 from user_svc.models import Profile, ProfileData, ProfileResponse, Register_User, Token, User
+#Added below
+from fastapi.middleware.cors import CORSMiddleware
 
 # As the data in this microservice is critical and needs to be cybersecured, therefore it is stored and read directly from the database.
 # Kafka is a distributed event streaming platform, and messages (events) are often stored in plaintext format within the Kafka brokers. 
@@ -27,6 +29,23 @@ async def lifespan(app: FastAPI):
 
 app: FastAPI = FastAPI(
     lifespan=lifespan, title="User Management Service", version='1.0.0')
+
+# Define the origins that should be allowed to make requests to your API
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev",  # Add your specific origin here
+    # "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev"
+    # Add other origins as needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 async def root():
