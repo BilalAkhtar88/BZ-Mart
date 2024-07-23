@@ -246,8 +246,8 @@ async def delete_user_profile(
 
 @app.get("/users", response_model=List[User])
 async def get_all_users(
-    session: Annotated[Session, Depends(get_session)],
-    current_user: Annotated[User, Depends(auth.current_user)]
+    session: Annotated[Session, Depends(get_session)]
+    # current_user: Annotated[User, Depends(auth.current_user)]
 ) -> List[User]:
     """
     Development-only endpoint to get all users.
