@@ -97,8 +97,8 @@ def current_user(
         token: Annotated[str, Depends(oauth_scheme)],
         session: Annotated[Session, Depends(get_session)]
 ) -> User:
-    print(f"token: {token}")
     logger.info(f"token: {token}")
+    print(f"token: {token}")
 
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -106,7 +106,7 @@ def current_user(
         headers={"www-Authenticate": "Bearer"}
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str | None = payload.get("sub")
         if username is None:
             raise credential_exception
@@ -117,6 +117,7 @@ def current_user(
     if not user:
         raise credential_exception
     return user
+
 
 def create_refresh_token(
         data: dict,
