@@ -7,15 +7,49 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from user_svc import auth
 from user_svc.db import get_session, create_tables
-from user_svc.models import Profile, ProfileData, ProfileResponse, Register_User, Token, User
-#Added below
-from fastapi.middleware.cors import CORSMiddleware
+from user_svc.models import Profile, ProfileData, ProfileResponse, Register_User, Token, TokenData, User
+from fastapi.security import OAuth2PasswordBearer
+# #Added below
+# from fastapi.middleware.cors import CORSMiddleware
 
 # As the data in this microservice is critical and needs to be cybersecured, therefore it is stored and read directly from the database.
 # Kafka is a distributed event streaming platform, and messages (events) are often stored in plaintext format within the Kafka brokers. 
 # This can lead to sensitive user data being exposed if not properly secured.
 # Therefore, I directly store and retrieve data from the database in the microservice without any kafka communication.
 # Kafka maybe used for token based authentication to communicate with other microservices.
+from jose import jwt, JWTError
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
+EXPIRY_TIME = int(os.getenv('EXPIRY_TIME'))
+REFRESH_EXPIRY_DAYS = int(os.getenv('REFRESH_EXPIRY_DAYS'))
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+def current_user(
+        token: Annotated[str, Depends(oauth_scheme)],
+        session: Annotated[Session, Depends(get_session)]
+) -> User:
+
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid token, Please login again",
+        headers={"www-Authenticate": "Bearer"}
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+        username: str | None = payload.get("sub")
+        if username is None:
+            raise credential_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credential_exception
+    user = auth.get_user_from_db(session, username=token_data.username)
+    if not user:
+        raise credential_exception
+    return user
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,21 +64,21 @@ async def lifespan(app: FastAPI):
 app: FastAPI = FastAPI(
     lifespan=lifespan, title="User Management Service", version='1.0.0')
 
-# Define the origins that should be allowed to make requests to your API
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    # "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev",  # Add your specific origin here
-    # Add other origins as needed
-]
+# # Define the origins that should be allowed to make requests to your API
+# origins = [
+#     "http://localhost",
+#     "http://localhost:8000",
+#     # "https://8002-cs-892713953527-default.cs-asia-east1-vger.cloudshell.dev",  # Add your specific origin here
+#     # Add other origins as needed
+# ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 @app.get('/')
 async def root():
@@ -102,22 +136,22 @@ async def regiser_user(
 # create user profile
 @app.post('/profile', response_model=ProfileResponse)
 async def create_user_profile(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     user_data: ProfileData,
     session: Annotated[Session, Depends(get_session)],
 ) -> Profile:
-    print(f"current_user: {current_user}")
+    print(f"current_user: {curr_user}")
     """ Create user profile """
     try:
         existing_profile: Profile | None = auth.get_user_data_from_db(
-            session, current_user.username)
+            session, curr_user.username)
         if existing_profile:
             raise HTTPException(
                 status_code=409, detail="User profile already exists. Try editing it")
         new_profile = Profile(
-            username=current_user.username,
-            user_id=current_user.id,
-            email=current_user.email,
+            username=curr_user.username,
+            user_id=curr_user.id,
+            email=curr_user.email,
             name=user_data.name,
             phone=user_data.phone,
             shipping_address=user_data.shipping_address
@@ -137,14 +171,14 @@ async def create_user_profile(
 # store payment token in database and send message to kafka
 @app.post("/profile/payment_info")
 async def store_payment_token(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     payment_token: str,
     session: Annotated[Session, Depends(get_session)]
 ):
     """ Store payment token in database """
     try:
         existing_profile: Profile | None = auth.get_user_data_from_db(
-            session, current_user.username)
+            session, curr_user.username)
         if not existing_profile:
             raise HTTPException(
                 status_code=409, detail="User Profile not found. Try creating it")
@@ -165,12 +199,12 @@ async def store_payment_token(
 # get user profile
 @app.get('/profile/me', response_model=ProfileResponse)
 async def get_user_profile(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     session: Annotated[Session, Depends(get_session)]
 ) -> Profile:
     """ Get user profile """
     user_profile: Profile | None = auth.get_user_data_from_db(
-        session, current_user.username)
+        session, curr_user.username)
     if not user_profile:
         raise HTTPException(
             status_code=404, detail="User profile not found")
@@ -179,7 +213,7 @@ async def get_user_profile(
 # edit user profile
 @app.put('/profile', response_model=ProfileResponse)
 async def edit_user_profile(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     user_data: ProfileData,
     session: Annotated[Session, Depends(get_session)]
 ) -> Profile:
@@ -187,7 +221,7 @@ async def edit_user_profile(
     try:
         # get existing profile from db
         existing_profile: Profile | None = auth.get_user_data_from_db(
-            session, current_user.username)
+            session, curr_user.username)
         if not existing_profile:
             raise HTTPException(
                 status_code=404, detail="User profile not found")
@@ -210,14 +244,14 @@ async def edit_user_profile(
 # update payment_token
 @app.put("/profile/payment_info")
 async def update_payment_token(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     payment_token: str,
     session: Annotated[Session, Depends(get_session)]):
     """ Update payment token """
     try:
         # get existing profile from db
         existing_profile: Profile | None = auth.get_user_data_from_db(
-            session, current_user.username)
+            session, curr_user.username)
         if not existing_profile:
             raise HTTPException(
                 status_code=404, detail="User profile not found")
@@ -240,14 +274,14 @@ async def update_payment_token(
 # delete user profile
 @app.delete('/profile')
 async def delete_user_profile(
-    current_user: Annotated[User, Depends(auth.current_user)],
+    curr_user: Annotated[User, Depends(current_user)],
     session: Annotated[Session, Depends(get_session)]
 ) -> dict[str, str]:
     """ Delete User Profile """
     try:
         # get existing profile from db
         existing_profile: Profile | None = auth.get_user_data_from_db(
-            session, current_user.username)
+            session, curr_user.username)
         if not existing_profile:
             raise HTTPException(
                 status_code=404, detail="User profile not found")
