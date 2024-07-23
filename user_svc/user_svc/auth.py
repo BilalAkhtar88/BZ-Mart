@@ -97,6 +97,8 @@ def current_user(
         token: Annotated[str, Depends(oauth_scheme)],
         session: Annotated[Session, Depends(get_session)]
 ) -> User:
+    print(f"token: {token}")
+    logger.info(f"token: {token}")
 
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
